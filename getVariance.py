@@ -66,8 +66,8 @@ def update_study_area(RegionLeft,RegionBottom):
     return RegionLeft,RegionBottom,round(delta_x,2),round(delta_y,2)
 
 def proj_trans(lon, lat, proj):
-    p1 = Proj(init='epsg:4326')  # 地理坐标系WGS1984
-    p2 = Proj(init=proj)  # 投影坐标WGS_1984_UTM_Zone_50N(bj/wh)
+    p1 = Proj(init='epsg:4326')   # Geographic coordinate system WGS1984
+    p2 = Proj(init=proj)          # Projected coordinate system WGS_1984_UTM_Zone_50N(bj/wh)
 
     lon_val = lon.values
     lat_val = lat.values
@@ -76,11 +76,10 @@ def proj_trans(lon, lat, proj):
     return x2, y2
 
 def get_grid_id(cellSize, gridNum, x, y,gridLeft,gridBottom):
-    # 以网格左下角为原点，划分格网序号;
     xidArr = np.ceil((x - gridLeft) / cellSize);
     yidArr = np.ceil((y - gridBottom) / cellSize);
     outIndex = np.array([], dtype=np.bool)
-    # x,y(1,gridNum = 30)
+
     for i in range(0, len(xidArr)):
         if (xidArr[i] < 1) | (xidArr[i] > gridNum):
             outIndex = np.append(outIndex, True)
@@ -91,7 +90,7 @@ def get_grid_id(cellSize, gridNum, x, y,gridLeft,gridBottom):
             outIndex[j] = True
 
     grid_id = (yidArr - 1) * gridNum + xidArr - 1
-    # 标记出界点
+
     grid_id[outIndex] = -1
     # grid_id(0,gridNum*gridNum-1 = 899)
     totalNum = gridNum * gridNum - 1
@@ -115,7 +114,7 @@ def caculate_variance():
         o = gridinf.iloc[i]
         d_arr = gridinf.iloc[:i]
         lags = np.sqrt(pow((d_arr.gridx.tolist() - o.gridx), 2) + pow((d_arr.gridy.tolist() - o.gridy), 2)) * csize
-        # 0列对应'checkin_sum'
+
         dif = abs(sdd_df.iloc[:i, 0] - sdd_df.iloc[i, 0])
         dif_square = pow(dif, 2)
         lags_list.extend(lags)
